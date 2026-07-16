@@ -1,0 +1,9 @@
+{
+  "applicant_name": "Vikram Sen",
+  "loan_amount": 42000,
+  "loan_purpose": "auto purchase",
+  "annual_income": 58000,
+  "credit_score": 621,
+  "existing_debt": 26000,
+  "employment_years": 2
+}
