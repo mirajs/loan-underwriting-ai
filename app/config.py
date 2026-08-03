@@ -110,6 +110,7 @@ def get_reasoning_llm(temperature: float = 0.1):
 def get_fallback_llm(temperature: float = 0.0):
     """
     OpenRouter free model — used only if primary providers are rate-limited.
+    OpenRouter's free lineup rotates and to check https://openrouter.ai/models (filter Price: Free)
 
     The import is placed inside the function (not at the top of the file) so
     that people who never configure OpenRouter don't need the
@@ -122,7 +123,7 @@ def get_fallback_llm(temperature: float = 0.0):
             "OPENROUTER_API_KEY not set. Get a free key at https://openrouter.ai"
         )
     return ChatOpenAI(
-        model="meta-llama/llama-3.3-70b-instruct:free",
+        model="openai/gpt-oss-20b:free",
         temperature=temperature,
         api_key=OPENROUTER_API_KEY,
         # OpenRouter exposes an OpenAI-compatible endpoint, so we can reuse
