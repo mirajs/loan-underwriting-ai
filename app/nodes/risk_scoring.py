@@ -11,7 +11,7 @@ import json
 import re
 from datetime import datetime, timezone
 from app.state import UnderwritingState
-from app.config import get_fast_llm, call_with_fallback, extract_text
+from app.config import get_reasoning_llm, call_with_fallback, extract_text
 
 # The system prompt is where we constrain the model to a fixed, parseable
 # output shape. Being explicit about "ONLY a JSON object" and "no markdown
@@ -89,10 +89,16 @@ def risk_scoring_node(state: UnderwritingState) -> UnderwritingState:
         )
         return _parse_json_response(extract_text(response.content))
 
-    # get_fast_llm() is called once, eagerly, to build the primary client;
+    # NOTE: Originally routed to Groq (get_fast_llm) as the fast tier in a
+    # two-model cost/speed architecture. Temporarily routed through Gemini
+    # instead, since Groq's free tier stopped granting access to Llama
+    # models and their Developer (pay-as-you-go) tier is currently closed
+    # to new upgrades. Switch back to get_fast_llm() once Groq's tier
+    # reopens -- see app/config.py's get_fast_llm docstring.
+    # get_reasoning_llm() is called once, eagerly, to build the primary client;
     # call_with_fallback only swaps to get_fallback_llm() internally if
     # _call(primary) raises.
-    result = call_with_fallback(_call, get_fast_llm())
+    result = call_with_fallback(_call, get_reasoning_llm())
 
     audit_entry = {
         "node": "risk_scoring",
